@@ -48,7 +48,7 @@ def plot_data(data):
         go.Scatter(x=data["Date"],
                    y=data["Open"], 
                    name="Open",
-                   visible=False,
+                   visible=True,
                    line=dict(color=colours[0])))
     fig.add_trace(
         go.Scatter(x=data["Date"],
@@ -58,20 +58,33 @@ def plot_data(data):
                    line=dict(color=colours[1])))
     fig.add_trace(
         go.Scatter(x=data["Date"],
+                   y=[data["High"].mean()] * len(data.index), 
+                   name="High Avg.",
+                   visible=False,
+                   line=dict(color=colours[1], dash="dash")))
+    fig.add_trace(
+        go.Scatter(x=data["Date"],
                    y=data["Low"], 
                    name="Low",
                    visible=False,
                    line=dict(color=colours[2])))
     fig.add_trace(
         go.Scatter(x=data["Date"],
+                   y=[data["Low"].mean()] * len(data.index), 
+                   name="Low Avg.",
+                   visible=False,
+                   line=dict(color=colours[2], dash="dash")))
+    fig.add_trace(
+        go.Scatter(x=data["Date"],
                    y=data["Close*"], 
                    name="Close*",
+                   visible=False,
                    line=dict(color=colours[3])))
     fig.add_trace(
         go.Scatter(x=data["Date"],
                    y=data["Adj Close**"], 
                    name="Adj Close**",
-                   visible=True,
+                   visible=False,
                    line=dict(color=colours[4])))
     fig.add_trace(
         go.Scatter(x=data["Date"],
@@ -79,8 +92,62 @@ def plot_data(data):
                    name="Volume",
                    visible=False,
                    line=dict(color=colours[5])))
+    
+    high_annotations = [dict(x="2022-06-08",
+                         y=data["High"].mean(),
+                         xref="x", yref="y",
+                         text="High Average:<br> %.3f" % data["High"].mean(),
+                         ax=0, ay=-40)]
+    low_annotations = [dict(x="2022-06-08",
+                        y=data["Low"].mean(),
+                        xref="x", yref="y",
+                        text="Low Average:<br> %.3f" % data["Low"].mean(),
+                        ax=0, ay=40)]
 
     fig.update_layout(
+    updatemenus=[
+        dict(
+            active=0,
+            buttons=list([
+                dict(label="Open",
+                     method="update",
+                     args=[{"visible": [True, False, False, False, False, False, False, False]},
+                           {"title": "Lumber Futures Open",
+                            "annotations": []}]),
+                dict(label="High",
+                     method="update",
+                     args=[{"visible": [False, True, True, False, False, False, False, False]},
+                           {"title": "Lumber Futures High",
+                            "annotations": high_annotations}]),
+                dict(label="Low",
+                     method="update",
+                     args=[{"visible": [False, False, False, True, True, False, False, False]},
+                           {"title": "Lumber Futures Low",
+                            "annotations": low_annotations}]),
+                dict(label="Close*",
+                     method="update",
+                     args=[{"visible": [False, False, False, False, False, True, False, False]},
+                           {"title": "Lumber Futures Close*",
+                            "title_x": 0.5,
+                            "annotations": []}]),
+                dict(label="Adj Close**",
+                     method="update",
+                     args=[{"visible": [False, False, False, False, False, False, True, False]},
+                           {"title": "Lumber Futures Adj Close*",
+                            "annotations": []}]),
+                dict(label="Volume",
+                     method="update",
+                     args=[{"visible": [False, False, False, False, False, False, False, True]},
+                           {"title": "Lumber Futures Volume",
+                            "annotations": []}]),
+            ]),
+        )
+    ],
+    title_x=0.5)                  
+
+    fig.update_layout(
+        title_text="Lumber Futures Open",
+        title_x=0.5,
         width=1800,
         height=900,
         autosize=True,
