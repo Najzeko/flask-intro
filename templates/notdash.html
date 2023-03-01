@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <style>
+    body {
+      padding: 25px;
+      background-color: rgb(17,17,17);
+      color: white;
+      font-size: 25px;
+    }
+  </style>
+  <body>
+    <div id='chart' class='chart'”></div>
+  </body>
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+<script type='text/javascript'>
+  var graphs = {{graphJSON | safe}};
+  Plotly.plot('chart',graphs,{});
+</script>
+</html>
